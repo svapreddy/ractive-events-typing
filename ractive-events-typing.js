@@ -76,7 +76,7 @@
 
             var typedKeys = function (event) {
                 if ([8, 46].indexOf(event.keyCode) > -1) {
-                    startTyping(event);
+                    startedTyping.call(this, event);
                 }
             };
 
@@ -90,28 +90,31 @@
                 stopped = undefined;
             };
 
-            node.addEventListener('focus', function (event) {
+            var beforeTyping = function (event) {
                 fire({
                     node: this,
                     original: event,
                     typingState: 'beforetyping' // may be, need a good name for this.
                 });
-            });
+            };
 
+            node.addEventListener('focus', beforeTyping);
             node.addEventListener('keypress', startedTyping);
             node.addEventListener('keydown', typedKeys);
             node.addEventListener('paste', startedTyping);
             node.addEventListener('blur', stoppedTyping);
-
+            // Todo : stoppedTyping when window lose focus, for now getting error from ractive.js (?)
+            // window.addEventListener('blur', stoppedTyping);
         }
 
         return {
             teardown: function () {
-                node.removeEventListener('focus', startedTyping);
+                node.removeEventListener('focus', beforeTyping);
                 node.removeEventListener('keypress', startedTyping);
                 node.removeEventListener('keydown', typedKeys);
                 node.removeEventListener('paste', startedTyping);
                 node.removeEventListener('blur', stoppedTyping);
+                // window.removeEventListener('blur', stoppedTyping);
             }
         };
     };
