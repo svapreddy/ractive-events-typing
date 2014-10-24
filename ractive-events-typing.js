@@ -1,4 +1,5 @@
-;(function(global, factory) {
+;
+(function (global, factory) {
 
     'use strict';
 
@@ -19,94 +20,98 @@
         throw new Error('Could not find Ractive! It must be loaded before the ractive-events-typing plugin');
     }
 
-}(typeof window !== 'undefined' ? window : this, function(Ractive) {
+}(typeof window !== 'undefined' ? window : this, function (Ractive) {
 
     'use strict';
 
-    var typing = function(node, fire) {
-        
+    var typing = function (node, fire) {
+
         var eligibleForTyping = ({
-        	"inputtext" : 0, "input" : 0, "textareatextarea" : 0
+            "inputtext": 0,
+            "input": 0,
+            "textareatextarea": 0
         })[[(node.tagName || "").toLowerCase(), (node.type || "").toLowerCase()].join('')] === 0;
-        
+
         var delay;
-        
+
         // Options
-        try { 
-	  		document.createEvent("TouchEvent");
-	  		delay = 500;
-	  	} catch(e) { 
-	  	  	delay = 1000; 
-	  	}
+        try {
+            document.createEvent("TouchEvent");
+            delay = 500;
+        } catch (e) {
+            delay = 1000;
+        }
 
         if (eligibleForTyping) {
-            var typing = false, timer = null, stopped;
-            
-            var startedTyping = function(event) {
-            	
-            	var that = this;
-            	
-            	clearTimeout(timer);
-            	
-            	(stopped === undefined || stopped === true) && fire({
+            var typing = false,
+                timer = null,
+                stopped;
+
+            var startedTyping = function (event) {
+
+                var that = this;
+
+                clearTimeout(timer);
+
+                (stopped === undefined || stopped === true) && fire({
                     node: that,
                     original: event,
-                    typingState : 'typing',
-                    sourceKey : event.type === "paste" ? "paste" : "typed"
+                    typingState: 'typing',
+                    sourceKey: event.type === "paste" ? "paste" : "typed"
                 });
-                
+
                 stopped = false;
-                
-                timer = setTimeout(function() {
-                	// stopped is used to stop continuous fire of state `typing`
-                	stopped = true;
-                	fire({
-	                    node: that,
-	                    original: event,
-	                    typingState : 'paused'
-	                });
+
+                timer = setTimeout(function () {
+                    // stopped is used to stop continuous fire of state `typing`
+                    stopped = true;
+                    fire({
+                        node: that,
+                        original: event,
+                        typingState: 'paused'
+                    });
                 }, delay);
-                
+
             };
-            
-            var typedKeys = function(event) {
-            	if ([8, 46].indexOf(event.keyCode) > -1) {
-	                startTyping(event);
-	            }
+
+            var typedKeys = function (event) {
+                if ([8, 46].indexOf(event.keyCode) > -1) {
+                    startTyping(event);
+                }
             };
-            
-            var stoppedTyping = function(event) {
-            	timer && clearTimeout(timer);
-            	fire({
+
+            var stoppedTyping = function (event) {
+                timer && clearTimeout(timer);
+                fire({
                     node: this,
                     original: event,
-                    typingState : 'stopped'
+                    typingState: 'stopped'
                 });
                 stopped = undefined;
             };
-            
-            node.addEventListener('focus', function(event) {
-            	fire({
+
+            node.addEventListener('focus', function (event) {
+                fire({
                     node: this,
                     original: event,
-                    typingState : 'beforetyping' // may be, need a good name for this.
+                    typingState: 'beforetyping' // may be, need a good name for this.
                 });
             });
-            
+
             node.addEventListener('keypress', startedTyping);
             node.addEventListener('keydown', typedKeys);
             node.addEventListener('paste', startedTyping);
             node.addEventListener('blur', stoppedTyping);
-            
+
         }
 
         return {
-            teardown: function() {
+            teardown: function () {
                 node.removeEventListener('focus', startedTyping);
                 node.removeEventListener('keypress', startedTyping);
-	            node.removeEventListener('keydown', typedKeys);
-	            node.removeEventListener('paste', startedTyping);
-	            node.removeEventListener('blur', stoppedTyping);
+                node.removeEventListener('keydown', typedKeys);
+                node.removeEventListener('paste', startedTyping);
+                node.removeEventListener('blur', stoppedTyping);
             }
         };
     };
