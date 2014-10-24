@@ -37,9 +37,9 @@
         // Options
         try {
             document.createEvent("TouchEvent");
-            delay = 500;
-        } catch (e) {
             delay = 1000;
+        } catch (e) {
+            delay = 500;
         }
 
         if (eligibleForTyping) {
