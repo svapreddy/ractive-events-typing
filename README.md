@@ -26,4 +26,4 @@ Possible values for `event.typingState`
   
 Note : event.sourceKey value will be "paste" if pasted else "typed" while typing.
 
-Demo Link : http://jsfiddle.net/nh96Lesd/1/
+Demo Link : http://jsfiddle.net/nh96Lesd/2/
