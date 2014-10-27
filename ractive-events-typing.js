@@ -30,7 +30,7 @@
             "inputtext": 0,
             "input": 0,
             "textareatextarea": 0
-        })[[(node.tagName || "").toLowerCase(), (node.type || "").toLowerCase()].join('')] === 0;
+        })[[(node.tagName || "").toLowerCase(), (node.type || "").toLowerCase()].join('')] === 0 || typeof(node.contentEditable) != 'undefined';
 
         var delay;
 
