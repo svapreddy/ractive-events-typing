@@ -1,7 +1,7 @@
 ractive-events-typing
 =====================
 
-RactiveJS Live typing plugin for beforetyping, typing, paused, stopped, events on textbox and textarea
+RactiveJS Live typing plugin for beforetyping, typing, paused, stopped, events on textbox, textarea and editable div
 
 Usage :
 
@@ -10,6 +10,10 @@ Include ractive-events-typing.js file after ractive.js file
 And then use it like below  
  
      <input type="text" on-typing="typeState" />
+     // or
+     <div contenteditable=true on-typing="typeState"></div>
+     // or 
+     <textarea on-typing="typeState"></textarea>
      
 JS :
 
